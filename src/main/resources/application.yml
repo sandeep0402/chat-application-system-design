@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gchat
+    username: gchat
+    password: gchat123
+  tomcat:
+    max-wait: 20000
+    max-active: 50
+    max-idle: 20
+    min-idle: 15
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  main:
+    allow-bean-definition-overriding: true
+
+
+security:
+  jwt:
+    token:
+      secret-key: secret-key
+      expire-length: 43200000 # 5 minutes duration by default: 12 hours * 60 minutes * 60 seconds * 1000 miliseconds
+
+server:
+  error:
+    include-stacktrace: never
+
+amazon:
+  aws:
+    accesskey: xxxx
+    region: xxxx
+    secretkey: xxxx
+  dynamodb:
+    endpoint: xxxx
+
