@@ -75,20 +75,4 @@ public class UserService {
     return username;
   }
 
-//  public void populateBasicData(){
-//    if(userRepository.count()==0){
-//      User admin = new User();
-//      admin.setUsername("admin@rategain.com");
-//      admin.setPassword(passwordEncoder.encode("admin"));
-//      admin.setRoles(new ArrayList<Role>(Arrays.asList(Role.ROLE_ADMIN)));
-//      userRepository.save(admin);
-//
-//      User client = new User();
-//      client.setUsername("client@rategain.com");
-//      client.setPassword(passwordEncoder.encode("client"));
-//      client.setRoles(new ArrayList<Role>(Arrays.asList(Role.ROLE_CLIENT)));
-//      userRepository.save(client);
-//    }
-//  }
-
 }
