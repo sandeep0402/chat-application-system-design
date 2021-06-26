@@ -4,9 +4,11 @@
 - [Out of Scope](#out-of-scope)
 - [Chat Application system design](#chat-application-system-design)
 - [Demo Chat Application system design](#demo-chat-application-system-design)
+- [Demo Chat Application - Group Chat screenshot](#demo-chat-application---group-chat-screenshot)
+- [Demo Chat Application - One to one user chat screenshot](#demo-chat-application---one-to-one-user-chat-screenshot)
 - [Demo Application functionality on AWS free tier](#demo-application-functionality-on-aws-free-tier)
 - [Deployment Strategy](#deployment-strategy)
-
+----
 # Features of demo chat application:
 1. Users can sign in with a any email id or using social login (Social login is part of architecture but not functional due to SSL). Sign in for the first time will automatically do signup using the provided password.
 2. It's a stateless application, using JWT token for every communication to identify the user. This app uses HTTP protocol for REST APIs and TCP used by websockets for server to client communication.
@@ -14,7 +16,7 @@
 4. Users can create, join, leave, and list the chat groups. Users can connect to any particular Group using websockets and start receiving all messages being sent to that group.
 5. Users can do one to one chat. Users can send and receive messages from any other application user.
 6. Once a message is delivered to the destination user, the delivery receipt is received automatically and then updates the message with delivery receipt.
-7. Connection manager manages the websockets connection Id. Cht manager asks the connection manager for the websocket connection Id to deliver a message over TCP.
+7. Connection manager manages the websockets connection Id. Chat manager asks the connection manager for the websocket connection Id to deliver a message over TCP.
 8. Connection managers add/remove user websocket connections when they connect or disconnect.
 9. Message registry uses NoSQL database to store all the messages, this whole process is an asynchronous process.
 10. Uuid manager provides a readily available list of uuids. It is used to simulate the  prefetching of a batch of uuid from the central uuid generator system. For every message, a new uuid is assigned from this system and then used throughout the application.
@@ -50,6 +52,12 @@
 ----
 # Demo Chat Application system design
 ![](chat-system-working-app.jpg)
+----
+# Demo Chat Application - Group Chat screenshot
+![](Group-Chat.png)
+----
+# Demo Chat Application - One to one user chat screenshot
+![](One-to-one-chat.png)
 ----
 # Demo Application functionality on AWS free tier
 1. Home page will redirect to swagger ui. Do the sign in with the user sign API with any password and remember password for next time. Copy the JWT token.
