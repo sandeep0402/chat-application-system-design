@@ -1,4 +1,5 @@
-**Content**
+# **Content**
+- [Problem statement](#problem-statement)
 - [Features of demo chat application:](#features-of-demo-chat-application-)
 - [In Scope](#in-scope)
 - [Out of Scope](#out-of-scope)
@@ -8,9 +9,21 @@
 - [Demo Chat Application - One to one user chat screenshot](#demo-chat-application---one-to-one-user-chat-screenshot)
 - [Demo Application functionality on AWS free tier](#demo-application-functionality-on-aws-free-tier)
 - [Deployment Strategy](#deployment-strategy)
+- [Demo deployment pointers on AWS free Tier](#demo-deployment-pointers-on-aws-free-tier)
+----
+# Problem statement
+1. you should be able to do email login with social login
+2. create, join or exit group
+3. Send and receive messages to joined group
+4. Send and receive messages to any valid user
+5. Record user last seen message
+6. Message message delivery receipt
+7. Process message offline (send the message when user comes online)
+8. report or analytics to find out top 10 popular groups (largest number of members of active users or highest chat messagee) (and order by it)
+
 ----
 # Features of demo chat application:
-1. Users can sign in with a any email id or using social login (Social login is part of architecture but not functional due to SSL). Sign in for the first time will automatically do signup using the provided password.
+1. Users can sign in with any email id or using social login (Social login is part of architecture but not functional due to SSL). Sign in for the first time will automatically do signup using the provided password.
 2. It's a stateless application, using JWT token for every communication to identify the user. This app uses HTTP protocol for REST APIs and TCP used by websockets for server to client communication.
 3. Users can sign in, can generate new JWT tokens and can check who I am.
 4. Users can create, join, leave, and list the chat groups. Users can connect to any particular Group using websockets and start receiving all messages being sent to that group.
@@ -79,3 +92,31 @@ http://127.0.0.1:8080/chat/user?Authorization=XYZ
 7. Istio can be used for traffic management, security and service mesh.
 8. Grafana, Prometheus, Kiali, sentry, kibana can be used for monitoring and investigation purposes.
 9. All machines, databases and services should run under VPC. Only the public facing applications should be exposed to connect from the outer world.
+----
+# Demo deployment pointers on AWS free Tier
+1. Create ec2 instance, create and download .pem file. i am calling it gchat.pem
+2. EC2 instance, open inbound and outbound connections for your sepecific IP or all public
+3. Configure iptables, to accept traffic from 80 and 8080 port
+	`iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT`
+	
+	`iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT`
+	
+	`iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080`
+4. Create postgres RDS instance and open inbound connection to be accessible from ec2. Create the database like gchat ro anything for this application.
+5. Create dynamodb and add security group same to ec2, so access from ec2 machine
+6. Create elastic search and kibana (refer AWS documentation). Not down the login credentials.
+7. Create 3 tables in DynamoDb named usermessage (messageId as primary key), lastseen(userId as primary key, groupmessage (messageId as primary key)
+8. From DynamoDb home page, enable DynamoDb stream so lambda function can read it.
+9. Create a lambda function using blueprint DynamoDb streaming and modify to send that data to elastic search.
+10. Create a AWS lambda expression (Node.js or Python)
+11. Copy you jar/war file to ec2 machine like this:
+`scp -i ~/gchat.pem /home/xxx/gchat-app/target/gchat-1.0.0.jar ec2-user@ec2-3-83-214-229.compute-1.amazonaws.com:/home/ec2`
+12. Login to ec2 via command line
+ `ssh -i "gchat.pem" ec2-user@ec2-3-83-214-229.compute-1.amazonaws.com`
+13. Start java application like
+ `sudo setsid java -jar -Dspring.profiles.active=prod gchat-1.0.0.jar &`
+14. To deploy new code, find previous pid running of port and kill it
+
+`	sudo ss -tulpn| grep :8080`	
+
+    `kill -9 xxxx`
